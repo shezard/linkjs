@@ -3,14 +3,14 @@
 link is a simple tool to chain callback :
 
 eg : 
-  ```js
+  `
   var takeTime = function (text,cb) {
     console.log(text);
     if(cb) setTimeout(function(){cb()}, 1000);
   };
-  ```
+  `
 with link :
-  ```js
+  `
   var myLink = link({ 
     funcs : {
       takeTime : function(text,next) {
@@ -21,9 +21,9 @@ with link :
   });
   
   myLink.takeTime('Hello').takeTime('World').callback();
-  ```
+  `
 you can also pass some context around :
-  ```js
+  `
   var myLink = link({ 
     context : {some:'context'},
     funcs : {
@@ -33,13 +33,13 @@ you can also pass some context around :
       }
     }
   });
-  ```
+  `
 and use cb as an alias to callback : 
-  ```js
+  `
   myLink.takeTime().takeTime().cb();
-  ```
+  `
 or pass the context inside your funcs :
-  ```js
+  `
   var myLink = link({ 
     funcs : {
       takeTime : function(text,next) {
@@ -50,9 +50,9 @@ or pass the context inside your funcs :
   });
   
   myLink.takeTime('text1').takeTime('text2').cb();
-  ```
+  `
 you can also make multiple chain, each call to callback will launch the functions preceding it :
-  ```js
+  `
   var myLink = link({ 
     funcs : {
       takeTime : function(text,next) {
@@ -63,7 +63,7 @@ you can also make multiple chain, each call to callback will launch the function
   });
   
   myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
-  ```
+  `
 ## License
 
 (The MIT License)
