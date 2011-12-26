@@ -16,6 +16,7 @@ with link :
 ```js
 var myLink = link({ 
   funcs : {
+    // You get next as the last argument, just call it to have access to the next function in the chain
     takeTime : function(text,next) {
       console.log(text);
       if(next) setTimeout(function(){next()}, 1000);
@@ -23,6 +24,7 @@ var myLink = link({
   }
 });
 
+// Here we ask myLink to call takeTime('Hello') with takeTime('World') as next
 myLink.takeTime('Hello').takeTime('World').callback();
 ```
 
@@ -30,6 +32,7 @@ you can also pass some context around :
 
 ```javascript
 var myLink = link({ 
+  // In every funcs, this will be {some:'context'}
   context : {some:'context'},
   funcs : {
     takeTime : function(next) {
@@ -45,7 +48,7 @@ and use cb as an alias to callback :
 myLink.takeTime().takeTime().cb();
 ```
   
-or pass the context inside your funcs :
+or pass the future context to next :
 
 ```javascript
 var myLink = link({
@@ -57,6 +60,7 @@ var myLink = link({
   }
 });
 
+// The first takeTime will have window as context, the second will have {some:'context2'}
 myLink.takeTime('text1').takeTime('text2').cb();
 ```
   
@@ -72,6 +76,7 @@ var myLink = link({
   }
 });
 
+// Here both takeTime('Hello') and takeTime('1') will be launch at the same time
 myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
 ```
 
