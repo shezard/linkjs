@@ -3,67 +3,78 @@
 link is a simple tool to chain callback :
 
 eg : 
-  `
-  var takeTime = function (text,cb) {
-    console.log(text);
-    if(cb) setTimeout(function(){cb()}, 1000);
-  };
-  `
+
+```js
+var takeTime = function (text,cb) {
+  console.log(text);
+  if(cb) setTimeout(function(){cb()}, 1000);
+};
+```
+  
 with link :
-  `
-  var myLink = link({ 
-    funcs : {
-      takeTime : function(text,next) {
-        console.log(text);
-        if(next) setTimeout(function(){next()}, 1000);
-      }
+
+```js
+var myLink = link({ 
+  funcs : {
+    takeTime : function(text,next) {
+      console.log(text);
+      if(next) setTimeout(function(){next()}, 1000);
     }
-  });
-  
-  myLink.takeTime('Hello').takeTime('World').callback();
-  `
+  }
+});
+
+myLink.takeTime('Hello').takeTime('World').callback();
+```
+
 you can also pass some context around :
-  `
-  var myLink = link({ 
-    context : {some:'context'},
-    funcs : {
-      takeTime : function(next) {
-        console.log(this);
-        if(next) setTimeout(function(){next()}, 1000);
-      }
+
+```javascript
+var myLink = link({ 
+  context : {some:'context'},
+  funcs : {
+    takeTime : function(next) {
+      console.log(this);
+      if(next) setTimeout(function(){next()}, 1000);
     }
-  });
-  `
+  }
+});
+```
 and use cb as an alias to callback : 
-  `
-  myLink.takeTime().takeTime().cb();
-  `
+
+```javascript
+myLink.takeTime().takeTime().cb();
+```
+  
 or pass the context inside your funcs :
-  `
-  var myLink = link({ 
-    funcs : {
-      takeTime : function(text,next) {
-        console.log(this);
-        if(next) setTimeout(function(){next({some:'con'+text})}, 1000);
-      }
+
+```javascript
+var myLink = link({
+  funcs : {
+    takeTime : function(text,next) {
+      console.log(this);
+      if(next) setTimeout(function(){next({some:'con'+text})}, 1000);
     }
-  });
+  }
+});
+
+myLink.takeTime('text1').takeTime('text2').cb();
+```
   
-  myLink.takeTime('text1').takeTime('text2').cb();
-  `
 you can also make multiple chain, each call to callback will launch the functions preceding it :
-  `
-  var myLink = link({ 
-    funcs : {
-      takeTime : function(text,next) {
-        console.log(text);
-        if(next) setTimeout(function(){next()}, 1000);
-      }
+
+```javascript
+var myLink = link({ 
+  funcs : {
+    takeTime : function(text,next) {
+      console.log(text);
+      if(next) setTimeout(function(){next()}, 1000);
     }
-  });
-  
-  myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
-  `
+  }
+});
+
+myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
+```
+
 ## License
 
 (The MIT License)
