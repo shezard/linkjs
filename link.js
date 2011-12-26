@@ -65,6 +65,14 @@
         // We return this to enable chaining
         return this;
       },
+      // Alias to callback
+      cb : function() {
+        _callback(this);
+        // We clean the chain, to enable mutiple chains to be called
+        _chain = [];
+        // We return this to enable chaining
+        return this;
+      },
       reverse : function() {
         _reverse(this);
         //We clean the chain, to enable multiple chains to be called
@@ -108,5 +116,5 @@
         if(next) setTimeout(function(){next()},1000);
       }
     }
-  }).demo('first').sum(1,1,1).demo('last').reverse().sum(1,2,3).demo('1').demo('2').demo('3').sum(222,222,222).callback();
+  }).demo('first').sum(1,1,1).demo('last').reverse().sum(1,2,3).demo('1').demo('2').demo('3').sum(222,222,222).cb();
 };
