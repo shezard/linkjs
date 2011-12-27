@@ -28,7 +28,7 @@
     }
   };
   
-  var _callback = function(context) {
+  var _callback = function(context,loop) {
     var i=-1, l=_chain.length, next;
     if(!l) return;
     for(;++i< l;) {
@@ -40,8 +40,21 @@
           var _next = next;
           // We keep the global context accessible
           var _context = _opts.context;
-          return function(localContext){
+          return function(localContext) {
             // We apply the global context (_opts.context) or this as the context
+            _next.func.apply((localContext || _context || context), _next.args);
+          };
+        })();
+        // We increment the length of the arguments
+        _chain[i].args.length++;
+      // If we are called via .loop()
+      } else if(loop) {
+        // The last item will be first 
+        next = _chain[0];
+        _chain[i].args[_chain[i].args.length] = (function(){
+          var _next = next;
+          var _context = _opts.context;
+          return function(localContext) {
             _next.func.apply((localContext || _context || context), _next.args);
           };
         })();
@@ -61,25 +74,40 @@
   // We prepare _link, which will be returned by the function    
   var _link = {
     // Callback is the function which start the chain
-    callback : function() {
+    callback : function(context) {
       _callback(this);
       // We clean the chain, to enable mutiple chains to be called
       _chain = [];
+      // If a context was specified we overide the global context for the future chain to be called
+      _opts.context = context || _opts.context;
       // We return this to enable chaining
       return this;
     },
     // Alias to callback
-    cb : function() {
+    cb : function(context) {
       _callback(this);
       // We clean the chain, to enable mutiple chains to be called
       _chain = [];
+      // If a context was specified we overide the global context for the future chain to be called
+      _opts.context = context || _opts.context;
       // We return this to enable chaining
       return this;
     },
+    // Call each item in reverse order (no cb involved)
     reverse : function() {
       _reverse(this);
       //We clean the chain, to enable multiple chains to be called
       _chain = [];
+      // We return this to enable chaining
+      return this;
+    },
+    // Loop CallBack
+    loop : function(context) {
+      _callback(this,true);
+      // We clean the chain, to enable mutiple chains to be called
+      _chain = [];
+      // If a context was specified we overide the global context for the future chain to be called
+      _opts.context = context || _opts.context;
       // We return this to enable chaining
       return this;
     }
