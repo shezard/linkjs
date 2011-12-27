@@ -48,22 +48,6 @@ and use cb as an alias to callback :
 myLink.takeTime().takeTime().cb();
 ```
   
-or pass the future context to next :
-
-```javascript
-var myLink = link({
-  funcs : {
-    takeTime : function(text,next) {
-      console.log(this);
-      if(next) setTimeout(function(){next({some:'con'+text})}, 1000);
-    }
-  }
-});
-
-// The first takeTime will have window as context, the second will have {some:'context2'}
-myLink.takeTime('text1').takeTime('text2').cb();
-```
-  
 you can also make multiple chain, each call to callback will launch the functions preceding it :
 
 ```javascript

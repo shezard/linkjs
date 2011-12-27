@@ -8,6 +8,7 @@ window.onload = function() {
     context : {a:1},
     // Define accessible funcs
     funcs : {
+      // Those function now get next, the next function to be called in the chain
       'demo' : function(a,next) {
         console.log('demo says: '+a);
         if(next) setTimeout(function(){next()},1000);
@@ -17,6 +18,7 @@ window.onload = function() {
         if(next) setTimeout(function(){next()},1000);
       }
     }
+  // Here you don't specifie next, he's autoloaded base on the callback's chain
   }).demo('first').sum(1,1,1).demo('last').reverse().sum(1,2,3).demo('1').demo('2').demo('3').sum(222,222,222).cb();
   
   // Example with a context used to store data
@@ -38,6 +40,23 @@ window.onload = function() {
       }
     }
   }).incr().incr().total().cb().total().incr().reverse();
+  
+  // Example with previous value used in the next function
+  
+  linkjs({
+    funcs : {
+      // You can pass stuff to next and the next function will get this as an arg
+      // But please be carefull counting the args if the count does not match what your function expect,
+      // bad this will happens, and the chain of callbacks will break
+      init : function(letter,next) {
+        if(next) setTimeout(function(){next(letter)},1000);
+      },
+      log : function(letter,next) {
+        console.log(letter);
+        if(next) setTimeout(function(){next(letter)},1000);
+      }
+    }
+  }).init('a').log().log().cb();
   
   // Examples with Raphael.js, enabling chained animations
   

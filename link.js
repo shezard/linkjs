@@ -28,6 +28,7 @@
     }
   };
   
+  // modify each item in _chain to hold the callback as the arg
   var _callback = function(context,loop) {
     var i=-1, l=_chain.length, next;
     if(!l) return;
@@ -40,9 +41,15 @@
           var _next = next;
           // We keep the global context accessible
           var _context = _opts.context;
-          return function(localContext) {
+          return function() {
+            // Here We merge the arguments received by this function, if any and _next.args
+            var i = -1, l = _next.args.length;
+            for(;++i<l;) {
+              arguments[arguments.length] = _next.args[i];
+              arguments.length++;
+            }
             // We apply the global context (_opts.context) or this as the context
-            _next.func.apply((localContext || _context || context), _next.args);
+            _next.func.apply((_context || context), arguments);
           };
         })();
         // We increment the length of the arguments
@@ -55,6 +62,11 @@
           var _next = next;
           var _context = _opts.context;
           return function(localContext) {
+            var i = -1, l = _next.args.length;
+            for(;++i<l;) {
+              arguments[arguments.length] = _next.args[i];
+              arguments.length++;
+            }
             _next.func.apply((localContext || _context || context), _next.args);
           };
         })();
@@ -65,9 +77,9 @@
     _chain[0].func.apply((_opts.context || context), _chain[0].args);
   };
   
-  // Tell you if an object is empty
+  // Tell you if an object is empty, using auto-hoisting here
   function _empty (obj) {
-   for (var key in obj) if (obj.hasOwnProperty(key)) return false;
+    for (var key in obj) if (obj.hasOwnProperty(key)) return false;
     return true;
   }
   
