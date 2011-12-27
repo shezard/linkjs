@@ -1,20 +1,22 @@
-## link
+## linkjs
 
-link is a simple tool to chain callback :
+_linkjs_ is a simple tool to chain callback :
 
-eg : 
+without _linkjs_ : 
 
 ```js
 var takeTime = function (text,cb) {
   console.log(text);
   if(cb) setTimeout(function(){cb()}, 1000);
 };
+
+takeTime('Hello',function(){takeTime('World');});
 ```
   
-with link :
+with _linkjs_ :
 
 ```js
-var myLink = link({ 
+var myLink = linkjs({ 
   funcs : {
     // You get next as the last argument, just call it to have access to the next function in the chain
     takeTime : function(text,next) {
@@ -31,11 +33,11 @@ myLink.takeTime('Hello').takeTime('World').callback();
 you can also pass some context around :
 
 ```javascript
-var myLink = link({ 
+var myLink = linkjs({ 
   // In every funcs, this will be {some:'context'}
   context : {some:'context'},
   funcs : {
-    takeTime : function(next) {
+    log : function(next) {
       console.log(this);
       if(next) setTimeout(function(){next()}, 1000);
     }
@@ -45,13 +47,13 @@ var myLink = link({
 and use cb as an alias to callback : 
 
 ```javascript
-myLink.takeTime().takeTime().cb();
+myLink.log().log().cb();
 ```
   
 you can also make multiple chain, each call to callback will launch the functions preceding it :
 
 ```javascript
-var myLink = link({ 
+var myLink = linkjs({ 
   funcs : {
     takeTime : function(text,next) {
       console.log(text);
@@ -62,6 +64,68 @@ var myLink = link({
 
 // Here both takeTime('Hello') and takeTime('1') will be launch at the same time
 myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
+```
+
+or even make loops :
+
+```javascript
+var myLink = linkjs({ 
+  funcs : {
+    tick : function(text,next) {
+      console.log(text);
+      if(next) setTimeout(function(){next()}, 1000);
+    }
+  }
+});
+
+// Here you will log Hello then one second later World then One second later Hello and so on
+myLink.tick('Hello').tick('World').loop();
+```
+
+and send additionnal params to next :
+
+```javascript
+var myLink = linkjs({ 
+  funcs : {
+    init : function(text,next) {
+      // We send text to next
+      if(next) setTimeout(function(){next(text)}, 1000);
+    },
+    // We send text to next
+    log : function(text,next) {
+      console.log(text += 'o');
+      if(next) setTimeout(function(){next(text)},1000);
+    }
+  }
+});
+
+// Now you just new to pass text to init, and log will take it as argument automatically
+myLink.init('go').log().log().log().log().cb();
+```
+
+## Real life example with Raphael.js
+
+```javascript
+
+var circ = paper.circle(10,10,30);
+
+var myLink = linkjs({ 
+  // we bind this to circ
+  context : circ,
+  funcs : {
+    // a sample animate function
+    animate : function(attr,duration,easing,next) {
+      if(next) {
+        this.animate(attr,duration,easing,function(){next()});
+      } else {
+        this.animate(attr,duration,easing);
+      }
+    }
+  }
+});
+
+// Now you chain animation easily
+myLink.animate({'stroke-width':10},1e3,'linear').animate({transform:'r45'},1e3,'bounce').cb();
 ```
 
 ## License
