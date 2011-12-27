@@ -28,6 +28,7 @@
     }
   };
   
+  // modify each item in _chain to hold the callback as the arg
   var _callback = function(context,loop) {
     var i=-1, l=_chain.length, next;
     if(!l) return;

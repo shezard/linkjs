@@ -10,11 +10,7 @@ window.onload = function() {
     funcs : {
       'demo' : function(a,next) {
         console.log('demo says: '+a);
-        if(a === '1') {
-          if (next) setTimeout(function(){next({a:'1'})},1000);
-        } else {
-          if(next) setTimeout(function(){next()},1000);
-        }
+        if(next) setTimeout(function(){next()},1000);
       },
       'sum' : function(a,b,c,next) {
         console.log('sum is: '+(a+b+c));
@@ -23,20 +19,34 @@ window.onload = function() {
     }
   }).demo('first').sum(1,1,1).demo('last').reverse().sum(1,2,3).demo('1').demo('2').demo('3').sum(222,222,222).cb();
   
+  // Example with a context used to store data
+  
+  linkjs({
+    context : {
+      pluralize : function(word,num) {
+        return word+(num > 1 ? 's' : '');
+      }
+    },
+    funcs : {
+      incr : function(next) {
+        this.count = this.count + 1 || 1;
+        if(next) next();
+      },
+      total : function(next) {
+        console.log('called '+this.count+' '+this.pluralize('time',this.count));
+        if(next) next();
+      }
+    }
+  }).incr().incr().total().cb().total().incr().reverse();
+  
   // Examples with Raphael.js, enabling chained animations
   
   var paper = new Raphael(document.getElementById('canvas_container'), 800, 800);
+
+  // Example 1
   
-  var circle = paper.circle(50,50,30).attr({'stroke':'none','fill':'rgb(0,255,0)'});
-  var rect = paper.rect(100,100,50,50).attr({'stroke':'none','fill':'rgb(0,255,0)'});
-  
-  var circle2 = paper.circle(50,100,30);
-  var rect2 = paper.rect(100,50,30,30);
-  
-  var circle3 = paper.circle(150,100,30);
-  var rect3 = paper.rect(100,150,30,30);
-  
-  var circle4 = paper.circle(300,300,10);
+  paper.text(100,10,"Example 1");
+  var circle = paper.circle(100,60,30).attr({'stroke':'none','fill':'rgb(0,255,0)'});
   
   linkjs({
     context : circle,
@@ -50,6 +60,11 @@ window.onload = function() {
       }
     }
   }).animate({'stroke-width':10,'stroke':'#000'}).animate({'stroke-width':5}).animate({'fill':'rgb(255,0,0)'}).cb();
+  
+  // Example 2
+  
+  paper.text(225,10,"Example 2");
+  var rect = paper.rect(200,30,50,50).attr({'stroke':'none','fill':'rgb(0,255,0)'});
   
   linkjs({
     context : rect,
@@ -76,29 +91,14 @@ window.onload = function() {
         }
       }
     }
-  }).rotate(-45).transform('r-45s2 2').rotate(90).rgba(255,0,255,.5).rotate(-360).cb();
+  }).rotate(-45).transform('r-45s.5 .5').rotate(90).rgba(255,0,255,.5).rotate(-360).cb();
   
-  // Example with a context used to store data
-  
-  linkjs({
-    context : {
-      pluralize : function(word,num) {
-        return word+(num > 1 ? 's' : '');
-      }
-    },
-    funcs : {
-      incr : function(next) {
-        this.count = this.count + 1 || 1;
-        if(next) next();
-      },
-      total : function(next) {
-        console.log('called '+this.count+' '+this.pluralize('time',this.count));
-        if(next) next();
-      }
-    }
-  }).incr().incr().total().cb().total().incr().reverse();
-  
+  // Example 3
   // Changing the context for the next chain (the shapes may or may not be synced)
+  
+  paper.text(350,10,'Example 3');
+  var circle2 = paper.circle(350,60,30);
+  var rect2 = paper.rect(330,120,45,45);
   
   linkjs({
     context : rect2,
@@ -112,9 +112,14 @@ window.onload = function() {
       }
     }
   // The first part of the chain is exec with this bind to rect2, after cb(circle2), this is bind to circle2
-  }).animate({transform:'s2 2'}).animate({transform:'s.5 .5'}).cb(circle2).animate({transform:'s2 2'}).animate({transform:'s.5 .5'}).cb();
+  }).animate({transform:'s.5 .5'}).animate({transform:'s1 1'}).cb(circle2).animate({transform:'s.5 .5'}).animate({transform:'s1 1'}).cb();
   
+  // Example 4
   // And how to avoid it
+  
+  paper.text(475,10,'Example 4');
+  var circle3 = paper.circle(470,60,30);
+  var rect3 = paper.rect(450,120,45,45);
   
   linkjs({
     context : {
@@ -136,7 +141,13 @@ window.onload = function() {
       }
     }
   // Here the shape may or may not be synced
-  }).animate({transform:'s2 2'}).animate({transform:'s.5 .5'}).cb();
+  }).animate({transform:'s.5 .5'}).animate({transform:'s1 1'}).cb();
+  
+  // Example 5
+  // loop aka infinite chain callback
+  
+  paper.text(600,10,'Example 5');
+  var circle4 = paper.circle(600,60,10);
   
   linkjs({
     context : circle4,
