@@ -19,7 +19,7 @@ window.onload = function() {
       }
     }
   // Here you don't specifie next, he's autoloaded base on the callback's chain
-  }).demo('first').sum(1,1,1).demo('last').reverse().sum(1,2,3).demo('1').demo('2').demo('3').sum(222,222,222).cb();
+  }).sum(1,2,3).demo('1').demo('2').demo('3').sum(111,222,444).cb();
   
   // Example with a context used to store data
   
@@ -32,14 +32,14 @@ window.onload = function() {
     funcs : {
       incr : function(next) {
         this.count = this.count + 1 || 1;
-        if(next) next();
+        if(next) setTimeout(function(){next()},1000);
       },
       total : function(next) {
         console.log('called '+this.count+' '+this.pluralize('time',this.count));
-        if(next) next();
+        if(next) setTimeout(function(){next()},1000);
       }
     }
-  }).incr().incr().total().cb().total().incr().reverse();
+  }).incr().incr().total().incr().incr().total().cb();
   
   // Example with previous value used in the next function
   
@@ -180,5 +180,27 @@ window.onload = function() {
       }
     }
   }).animate({transform:'s3 3'}).animate({transform:'s1 1'}).loop();
+  
+  // Utilities Example
+  // Chain
+  
+   linkjs({
+    funcs : {
+      log: function(letter) {
+        console.log('chain:'+letter);
+      }
+    }
+  }).log('0').log('1').log('2').log('3').chain();
+  
+  
+  // Reverse
+  
+  linkjs({
+    funcs : {
+      log: function(letter) {
+        console.log('reverse:'+letter);
+      }
+    }
+  }).log('0').log('1').log('2').log('3').reverse();
   
 };

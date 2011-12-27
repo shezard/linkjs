@@ -130,6 +130,24 @@ var myLink = linkjs({
 myLink.animate({'stroke-width':10},1e3,'linear').animate({transform:'s2 2'},1e3,'bounce').cb();
 ```
 
+## Utilities
+
+linkjs is also shipped with reverse :
+
+```javascript
+var myLink = linkjs({ 
+  funcs : {
+    // reverse don't use next
+    tick : function(text) {
+      console.log(text);
+    }
+  }
+});
+
+// Here your funcs will be call in reverse order first tick('World') then tick('Hello');
+myLink.tick('Hello').tick('World').reverse();
+```
+
 ## License
 
 (The MIT License)

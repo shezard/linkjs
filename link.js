@@ -25,6 +25,18 @@
       // the inner chain of functions to be called 
       var _chain = [];
       
+      // call each function in chain from first to last binding context each time
+      var _order = function(context) {
+        // We just call each function in order
+        var i=-1;l = _chain.length;
+        if(!l) return;
+        for(;++i<l;){
+          var chain = _chain[i];
+          // For each function we rebind the context & add call with the recorded args
+          chain.func.apply(_opts.context || context,chain.args);
+        }
+      };
+      
       // call each function in chain from last to first binding context each time
       var _reverse = function(context) {
         // We just call each function in reverse order
@@ -117,6 +129,14 @@
         // Call each item in reverse order (no cb involved)
         reverse : function() {
           _reverse(this);
+          //We clean the chain, to enable multiple chains to be called
+          _chain = [];
+          // We return this to enable chaining
+          return this;
+        },
+        // Call each item in order (no cb involved)
+        chain : function() {
+          _order(this);
           //We clean the chain, to enable multiple chains to be called
           _chain = [];
           // We return this to enable chaining
