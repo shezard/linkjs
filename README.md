@@ -99,13 +99,15 @@ var myLink = linkjs({
   }
 });
 
-// Now you just new to pass text to init, and log will take it as argument automatically
+// Now you just need to pass text to init, and log will take it as argument automatically
 myLink.init('go').log().log().log().log().cb();
 ```
 
 ## Real life example with Raphael.js
 
 ```javascript
+
+var paper = new Raphael(0,0,800,600);
 
 var circ = paper.circle(10,10,30);
 
@@ -125,7 +127,7 @@ var myLink = linkjs({
 });
 
 // Now you chain animation easily
-myLink.animate({'stroke-width':10},1e3,'linear').animate({transform:'r45'},1e3,'bounce').cb();
+myLink.animate({'stroke-width':10},1e3,'linear').animate({transform:'s2 2'},1e3,'bounce').cb();
 ```
 
 ## License
