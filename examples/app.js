@@ -180,4 +180,5 @@ window.onload = function() {
       }
     }
   }).animate({transform:'s3 3'}).animate({transform:'s1 1'}).loop();
+  
 };

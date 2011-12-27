@@ -1,4 +1,5 @@
-﻿  (function() {
+﻿  // Encapsulation based on underscore.js
+  (function() {
   
     root = this;
     
@@ -12,9 +13,13 @@
       // throw Error if no opts.funcs
       if(!opts || typeof _opts.funcs !== 'object' || _empty(opts.funcs)) throw new Error('you should specified funcs to work with');
       
-      // throw Error if opts.funcs[stuff] is not a function
+      // throw Error if opts.funcs[stuff] is not a function, or is 'reserved' keyword
       for(var prop in opts.funcs) {
         if(typeof opts.funcs[prop] !== 'function') throw new Error('Your function for '+prop+' is not really a function');
+        if(prop === 'callback') throw new Error('You are going to overide callback, please use cb to start chaining');
+        if(prop === 'cb') throw new Error('You are going to overide cb, please use callback to start chaining');
+        if(prop === 'reverse') throw new Error('You are going to overide reverse, it won\'t be accessible anymore');
+        if(prop === 'loop') throw new Error('You are going to overide loop, it won\'t be accessible anymore');
       }
       
       // the inner chain of functions to be called 
