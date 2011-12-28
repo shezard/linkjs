@@ -28,6 +28,8 @@ var myLink = linkjs({
 
 // Here we ask myLink to call takeTime('Hello') with takeTime('World') as next
 myLink.takeTime('Hello').takeTime('World').callback();
+// 'Hello'
+// 'World'
 ```
 
 you can also pass some context around :
@@ -48,6 +50,8 @@ and use cb as an alias to callback :
 
 ```javascript
 myLink.log().log().cb();
+// '{some :'context'}'
+// '{some :'context'}'
 ```
   
 you can also make multiple chain, each call to callback will launch the functions preceding it :
@@ -64,6 +68,10 @@ var myLink = linkjs({
 
 // Here both takeTime('Hello') and takeTime('1') will be launch at the same time
 myLink.takeTime('Hello').takeTime('World').cb().takeTime('1').takeTime('2').cb();
+// 'Hello'
+// '1'
+// 'World'
+// '2'
 ```
 
 or even make loops :
@@ -78,8 +86,12 @@ var myLink = linkjs({
   }
 });
 
-// Here you will log Hello then one second later World then One second later Hello and so on
+// Here you will log Hello then one second later World then one second later Hello and so on
 myLink.tick('Hello').tick('World').loop();
+// 'Hello'
+// 'World'
+// 'Hello'
+// ...
 ```
 
 and send additionnal params to next :
@@ -101,6 +113,10 @@ var myLink = linkjs({
 
 // Now you just need to pass text to init, and log will take it as argument automatically
 myLink.init('go').log().log().log().log().cb();
+// 'goo'
+// 'gooo'
+// 'goooo'
+// 'gooooo'
 ```
 
 ## Real life example with Raphael.js
@@ -146,6 +162,8 @@ var myLink = linkjs({
 
 // Here your funcs will be call in order first tick('World') then tick('Hello');
 myLink.tick('Hello').tick('World').chain();
+// 'Hello'
+// 'World'
 ```
 
 reverse :
@@ -162,6 +180,8 @@ var myLink = linkjs({
 
 // Here your funcs will be call in reverse order first tick('World') then tick('Hello');
 myLink.tick('Hello').tick('World').reverse();
+// 'World'
+// 'Hello'
 ```
 
 random : 
@@ -178,6 +198,9 @@ var myLink = linkjs({
 
 // Here your funcs will be call in random order 
 myLink.tick('1').tick('2').tick('3').random();
+// '2'
+// '1'
+// '3'
 ```
 
 
