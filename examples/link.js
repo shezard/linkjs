@@ -10,22 +10,22 @@
       // _opts.context is the global context
       _opts.context = _opts.context || this;
       
-      // throw Error if no opts.funcs
+      // Throw Error if no opts.funcs
       if(!opts || typeof _opts.funcs !== 'object' || _empty(opts.funcs)) throw new Error('you should specified funcs to work with');
       
-      // throw Error if opts.funcs[stuff] is not a function, or is 'reserved' keyword
+      // Throw Error if opts.funcs[stuff] is not a function, or is 'reserved' keyword
       for(var prop in opts.funcs) {
-        if(typeof opts.funcs[prop] !== 'function') throw new Error('Your function for '+prop+' is not really a function');
+        if(typeof opts.funcs[prop] !== 'function') throw new Error('Your function for "'+prop+'" is not really a function');
         if(prop === 'callback') throw new Error('You are going to overide callback, please use cb to start chaining');
         if(prop === 'cb') throw new Error('You are going to overide cb, please use callback to start chaining');
         if(prop === 'reverse') throw new Error('You are going to overide reverse, it won\'t be accessible anymore');
         if(prop === 'loop') throw new Error('You are going to overide loop, it won\'t be accessible anymore');
       }
       
-      // the inner chain of functions to be called 
+      // The inner chain of functions to be called 
       var _chain = [];
       
-      // call each function in chain from first to last binding context each time
+      // Call each function in chain from first to last binding context each time
       var _order = function(context) {
         // We just call each function in order
         var i=-1;l = _chain.length;
@@ -37,7 +37,7 @@
         }
       };
       
-      // call each function in chain from last to first binding context each time
+      // Call each function in chain from last to first binding context each time
       var _reverse = function(context) {
         // We just call each function in reverse order
         var l = _chain.length;
@@ -49,7 +49,7 @@
         }
       };
       
-      // modify each item in _chain to hold the callback as the arg
+      // Modify each item in _chain to hold the callback as the arg
       var _callback = function(context,loop) {
         var i=-1, l=_chain.length, next;
         if(!l) return;
@@ -102,29 +102,28 @@
       function _empty (obj) {
         for (var key in obj) if (obj.hasOwnProperty(key)) return false;
         return true;
-      }
+      };
+      
+      // Common implementation for callback and cb to keep things DRY
+      initCallback = function(context,obj) {
+        _callback(obj);
+        // We clean the chain, to enable mutiple chains to be called
+        _chain = [];
+        // If a context was specified we overide the global context for the future chain to be called
+        _opts.context = context || _opts.context;
+        // We return this to enable chaining
+        return obj;
+      };
       
       // We prepare _link, which will be returned by the function    
       var _link = {
         // Callback is the function which start the chain
         callback : function(context) {
-          _callback(this);
-          // We clean the chain, to enable mutiple chains to be called
-          _chain = [];
-          // If a context was specified we overide the global context for the future chain to be called
-          _opts.context = context || _opts.context;
-          // We return this to enable chaining
-          return this;
+          return initCallback(context,this);
         },
         // Alias to callback
         cb : function(context) {
-          _callback(this);
-          // We clean the chain, to enable mutiple chains to be called
-          _chain = [];
-          // If a context was specified we overide the global context for the future chain to be called
-          _opts.context = context || _opts.context;
-          // We return this to enable chaining
-          return this;
+          return initCallback(context,this);
         },
         // Call each item in reverse order (no cb involved)
         reverse : function() {
@@ -162,14 +161,17 @@
           var _prop = prop;
           // The closure return this function, with the correct _prop
           return function() {
+            // The actual content of the prop() function, a simple push of function & args into _chain
             _chain.push({func:_opts.funcs[_prop],args:arguments});
             // We return this to enable chaining
             return this;
           }
         })();
       };
+      // We return an access to the _link object
       return _link;
     };
-  
+    // the root is returned 
     return root;
+    // We call the outer closure with this so either global(in node) or window(in browser) is accesible
   }).call(this);
