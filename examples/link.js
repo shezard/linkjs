@@ -20,6 +20,7 @@
         if(prop === 'cb') throw new Error('You are going to overide cb, please use callback to start chaining');
         if(prop === 'reverse') throw new Error('You are going to overide reverse, it won\'t be accessible anymore');
         if(prop === 'loop') throw new Error('You are going to overide loop, it won\'t be accessible anymore');
+        if(prop === 'random') throw new Error('You are going to overide random, it won\'t be accessible anymore');
       }
       
       // The inner chain of functions to be called 
@@ -46,6 +47,17 @@
           var chain = _chain[l];
           // For each function we rebind the context & add call with the recorded args
           chain.func.apply(_opts.context || context,chain.args);
+        }
+      };
+      
+      // Call each function in chain in random order binding context each time
+      var _random = function(context) {
+        var l = _chain.length + 1;
+        if(!l) return;
+        for(;l-- > 1;) {
+          var r = Math.floor(Math.random()*l)
+          var chain = _chain.splice(r,1);
+          chain[0].func.apply(_opts.context || context,chain[0].args);
         }
       };
       
@@ -98,12 +110,6 @@
         _chain[0].func.apply((_opts.context || context), _chain[0].args);
       };
       
-      // Tell you if an object is empty, using auto-hoisting here
-      function _empty (obj) {
-        for (var key in obj) if (obj.hasOwnProperty(key)) return false;
-        return true;
-      };
-      
       // Common implementation for callback and cb to keep things DRY
       initCallback = function(context,obj) {
         _callback(obj);
@@ -115,6 +121,12 @@
         return obj;
       };
       
+      // Tell you if an object is empty, using auto-hoisting here
+      function _empty (obj) {
+        for (var key in obj) if (obj.hasOwnProperty(key)) return false;
+        return true;
+      };
+      
       // We prepare _link, which will be returned by the function    
       var _link = {
         // Callback is the function which start the chain
@@ -124,6 +136,16 @@
         // Alias to callback
         cb : function(context) {
           return initCallback(context,this);
+        },
+        // Loop CallBack
+        loop : function(context) {
+          _callback(this,true);
+          // We clean the chain, to enable mutiple chains to be called
+          _chain = [];
+          // If a context was specified we overide the global context for the future chain to be called
+          _opts.context = context || _opts.context;
+          // We return this to enable chaining
+          return this;
         },
         // Call each item in reverse order (no cb involved)
         reverse : function() {
@@ -141,13 +163,11 @@
           // We return this to enable chaining
           return this;
         },
-        // Loop CallBack
-        loop : function(context) {
-          _callback(this,true);
-          // We clean the chain, to enable mutiple chains to be called
+        // Call each item in random order (no cb involved)
+        random : function() {
+          _random(this);
+          //We clean the chain, to enable multiple chains to be called
           _chain = [];
-          // If a context was specified we overide the global context for the future chain to be called
-          _opts.context = context || _opts.context;
           // We return this to enable chaining
           return this;
         }

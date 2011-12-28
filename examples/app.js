@@ -203,4 +203,13 @@ window.onload = function() {
     }
   }).log('0').log('1').log('2').log('3').reverse();
   
+  // Random
+  
+  linkjs({
+    funcs : {
+      log: function(letter) {
+        console.log('random:'+letter);
+      }
+    }
+  }).log('0').log('1').log('2').log('3').random();
 };

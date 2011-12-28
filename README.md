@@ -132,7 +132,7 @@ myLink.animate({'stroke-width':10},1e3,'linear').animate({transform:'s2 2'},1e3,
 
 ## Utilities
 
-linkjs is also shipped with chain and reverse :
+chain : 
 
 ```javascript
 var myLink = linkjs({ 
@@ -148,6 +148,8 @@ var myLink = linkjs({
 myLink.tick('Hello').tick('World').chain();
 ```
 
+reverse :
+
 ```javascript
 var myLink = linkjs({ 
   funcs : {
@@ -161,6 +163,23 @@ var myLink = linkjs({
 // Here your funcs will be call in reverse order first tick('World') then tick('Hello');
 myLink.tick('Hello').tick('World').reverse();
 ```
+
+random : 
+
+```javascript
+var myLink = linkjs({ 
+  funcs : {
+    // chain don't use next
+    tick : function(text) {
+      console.log(text);
+    }
+  }
+});
+
+// Here your funcs will be call in random order 
+myLink.tick('1').tick('2').tick('3').random();
+```
+
 
 ## License
 
