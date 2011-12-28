@@ -137,7 +137,7 @@ chain :
 ```javascript
 var myLink = linkjs({ 
   funcs : {
-    // reverse don't use next
+    // chain don't use next
     tick : function(text) {
       console.log(text);
     }
@@ -153,7 +153,7 @@ reverse :
 ```javascript
 var myLink = linkjs({ 
   funcs : {
-    // chain don't use next
+    // reverse don't use next
     tick : function(text) {
       console.log(text);
     }
@@ -169,7 +169,7 @@ random :
 ```javascript
 var myLink = linkjs({ 
   funcs : {
-    // chain don't use next
+    // random don't use next
     tick : function(text) {
       console.log(text);
     }
