@@ -69,7 +69,7 @@
           // We set next to the next chain item if any
           if(next = _chain[i+1]) {
             // We create a closure as the last args of this item of the chain
-            _chain[i].args[_chain[i].args.length] = (function(){
+            _chain[i].args[_chain[i].args.length] = (function() {
               // We keep next accessible
               var _next = next;
               // We keep the global context accessible
@@ -91,16 +91,16 @@
           } else if(loop) {
             // The last item will be first 
             next = _chain[0];
-            _chain[i].args[_chain[i].args.length] = (function(){
+            _chain[i].args[_chain[i].args.length] = (function() {
               var _next = next;
               var _context = _opts.context;
-              return function(localContext) {
+              return function() {
                 var i = -1, l = _next.args.length;
                 for(;++i<l;) {
                   arguments[arguments.length] = _next.args[i];
                   arguments.length++;
                 }
-                _next.func.apply((localContext || _context || context), _next.args);
+                _next.func.apply((_context || context), _next.args);
               };
             })();
             _chain[i].args.length++;

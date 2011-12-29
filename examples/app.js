@@ -35,7 +35,7 @@ window.onload = function() {
         if(next) setTimeout(function(){next()},1000);
       },
       total : function(next) {
-        console.log('called '+this.count+' '+this.pluralize('time',this.count));
+        console.log('called '+this.count+': '+this.pluralize('time',this.count));
         if(next) setTimeout(function(){next()},1000);
       }
     }
@@ -49,10 +49,11 @@ window.onload = function() {
       // But please be carefull counting the args if the count does not match what your function expect,
       // bad this will happens, and the chain of callbacks will break
       init : function(letter,next) {
+        console.log('value init to: '+letter);
         if(next) setTimeout(function(){next(letter)},1000);
       },
       log : function(letter,next) {
-        console.log(letter);
+        console.log('value was: '+letter);
         if(next) setTimeout(function(){next(letter)},1000);
       }
     }
@@ -180,14 +181,14 @@ window.onload = function() {
       }
     }
   }).animate({transform:'s3 3'}).animate({transform:'s1 1'}).loop();
-  
+   
   // Utilities Example
   // Chain
   
    linkjs({
     funcs : {
       log: function(letter) {
-        console.log('chain:'+letter);
+        console.log('chain: '+letter);
       }
     }
   }).log('0').log('1').log('2').log('3').chain();
@@ -198,7 +199,7 @@ window.onload = function() {
   linkjs({
     funcs : {
       log: function(letter) {
-        console.log('reverse:'+letter);
+        console.log('reverse: '+letter);
       }
     }
   }).log('0').log('1').log('2').log('3').reverse();
@@ -208,7 +209,7 @@ window.onload = function() {
   linkjs({
     funcs : {
       log: function(letter) {
-        console.log('random:'+letter);
+        console.log('random: '+letter);
       }
     }
   }).log('0').log('1').log('2').log('3').random();
