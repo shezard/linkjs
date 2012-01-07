@@ -114,7 +114,7 @@ window.onload = function() {
   }).rotate(-45).transform('r-45s.5 .5').rotate(90).rgba(255,0,255,.5).rotate(-360).cb();
   
   // Example 3
-  // Changing the context for the next chain (the shapes may or may not be synced)
+  // Changing the context for the next chain (the shapes WON'T be synced)
   
   paper.text(350,10,'Example 3');
   var circle2 = paper.circle(350,60,30);
@@ -160,7 +160,7 @@ window.onload = function() {
         }
       }
     }
-  // Here the shape may or may not be synced
+  // Here the shape WON'T be synced
   }).animate({transform:'s.5 .5'}).animate({transform:'s1 1'}).cb();
   
   // Example 5
@@ -192,7 +192,6 @@ window.onload = function() {
       }
     }
   }).log('0').log('1').log('2').log('3').chain();
-  
   
   // Reverse
   
