@@ -1,23 +1,21 @@
 window.onload = function() {
 
-  // Dummy example
-
-  // Setup linkjs
+  // A dummy example 
   linkjs({ 
-    // Set global context to {a:1}
-    context : {a:1},
-    // Define accessible funcs
-    funcs : {
-      // Those function now get next, the next function to be called in the chain
-      'demo' : function(a,next) {
-        console.log('demo says: '+a);
-        if(next) setTimeout(function(){next()},1000);
-      },
-      'sum' : function(a,b,c,next) {
-        console.log('sum is: '+(a+b+c));
-        if(next) setTimeout(function(){next()},1000);
-      }
+  // Set global context to {a:1}
+  context : {a:1},
+  // Define accessible funcs
+  funcs : {
+    // Those function now get next, the next function to be called in the chain
+    'demo' : function(a,next) {
+      console.log('demo says: '+a);
+      if(next) setTimeout(function(){next()},1000);
+    },
+    'sum' : function(a,b,c,next) {
+      console.log('sum is: '+(a+b+c));
+      if(next) setTimeout(function(){next()},1000);
     }
+  }
   // Here you don't specifie next, he's autoloaded base on the callback's chain
   }).sum(1,2,3).demo('1').demo('2').demo('3').sum(111,222,444).cb();
   
@@ -212,4 +210,5 @@ window.onload = function() {
       }
     }
   }).log('0').log('1').log('2').log('3').random();
+  
 };

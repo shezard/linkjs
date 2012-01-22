@@ -11,17 +11,17 @@
       _opts.context = _opts.context || this;
       
       // Throw Error if no opts.funcs
-      if(!opts || typeof _opts.funcs !== 'object' || _empty(opts.funcs)) throw new Error('you should specified funcs to work with');
+      if(!opts || typeof _opts.funcs !== 'object' || _empty(opts.funcs)) throw Error('you should specified funcs to work with');
       
       // Throw Error if opts.funcs[stuff] is not a function, or is 'reserved' keyword
       for(var prop in opts.funcs) {
-        if(typeof opts.funcs[prop] !== 'function') throw new Error('Your function for "'+prop+'" is not really a function');
-        if(prop === 'callback') throw new Error('You are going to overide "callback", please use cb to start chaining');
-        if(prop === 'cb') throw new Error('You are going to overide "cb", please use callback to start chaining');
-        if(prop === 'loop') throw new Error('You are going to overide "loop", it won\'t be accessible anymore');
-        if(prop === 'chain') throw new Error('You are going to overide "chain", it won\'t be accessible anymore');
-        if(prop === 'reverse') throw new Error('You are going to overide "reverse", it won\'t be accessible anymore');
-        if(prop === 'random') throw new Error('You are going to overide "random", it won\'t be accessible anymore');
+        if(typeof opts.funcs[prop] !== 'function') throw Error('Your function for "'+prop+'" is not really a function');
+        if(prop === 'callback') throw Error('You are going to overide "callback", please use cb to start chaining');
+        if(prop === 'cb') throw Error('You are going to overide "cb", please use callback to start chaining');
+        if(prop === 'loop') throw Error('You are going to overide "loop", it won\'t be accessible anymore');
+        if(prop === 'chain') throw Error('You are going to overide "chain", it won\'t be accessible anymore');
+        if(prop === 'reverse') throw Error('You are going to overide "reverse", it won\'t be accessible anymore');
+        if(prop === 'random') throw Error('You are going to overide "random", it won\'t be accessible anymore');
       }
       
       // The inner chain of functions to be called 
@@ -129,7 +129,9 @@
       };
       
       // We prepare _link, which will be returned by the function    
-      var _link = {
+      var _link = function(){};
+      // We set the prototype chain
+      _link.prototype = {
         // Callback is the function which start the chain
         callback : function(context) {
           return initCallback(context,this);
@@ -177,7 +179,7 @@
       // We feed _link with the functions given inside _opts.func
       for (var prop in _opts.funcs) {
         // We set a closure
-        _link[prop] = (function() {
+        _link.prototype[prop] = (function() {
           // To save the current state of prop
           var _prop = prop;
           // The closure return this function, with the correct _prop
@@ -190,7 +192,7 @@
         })();
       };
       // We return an access to the _link object
-      return _link;
+      return new _link;
     };
     // the root is returned 
     return root;
